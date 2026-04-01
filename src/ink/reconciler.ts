@@ -59,6 +59,12 @@ $ npm install --save-dev react-devtools-core
 
 type AnyObject = Record<string, unknown>
 
+type UpdatePayload = {
+  props?: AnyObject
+  style?: AnyObject
+  nextStyle?: Styles | undefined
+}
+
 const diff = (before: AnyObject, after: AnyObject): AnyObject | undefined => {
   if (before === after) {
     return
@@ -232,7 +238,7 @@ const reconciler = createReconciler<
   unknown,
   DOMElement,
   HostContext,
-  boolean,
+  UpdatePayload | null,
   NodeJS.Timeout,
   -1,
   null
@@ -403,8 +409,19 @@ const reconciler = createReconciler<
     _type: ElementNames,
     oldProps: Props,
     newProps: Props,
-  ): boolean {
-    return oldProps !== newProps
+  ): UpdatePayload | null {
+    const props = diff(oldProps, newProps)
+    const style = diff(oldProps['style'] as Styles, newProps['style'] as Styles)
+
+    if (!props && !style) {
+      return null
+    }
+
+    return {
+      props,
+      style,
+      nextStyle: newProps['style'] as Styles | undefined,
+    }
   },
   commitMount(node: DOMElement): void {
     getFocusManager(node).handleAutoFocus(node)
@@ -432,13 +449,16 @@ const reconciler = createReconciler<
   },
   commitUpdate(
     node: DOMElement,
-    _updatePayload: boolean,
+    updatePayload: UpdatePayload | null,
     _type: ElementNames,
-    oldProps: Props,
-    newProps: Props,
+    _oldProps: Props,
+    _newProps: Props,
   ): void {
-    const props = diff(oldProps, newProps)
-    const style = diff(oldProps['style'] as Styles, newProps['style'] as Styles)
+    if (!updatePayload) {
+      return
+    }
+
+    const { props, style, nextStyle } = updatePayload
 
     if (props) {
       for (const [key, value] of Object.entries(props)) {
@@ -462,7 +482,7 @@ const reconciler = createReconciler<
     }
 
     if (style && node.yogaNode) {
-      applyStyles(node.yogaNode, style, newProps['style'] as Styles)
+      applyStyles(node.yogaNode, style, nextStyle)
     }
   },
   commitTextUpdate(node: TextNode, _oldText: string, newText: string): void {

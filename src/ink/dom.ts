@@ -265,13 +265,14 @@ export const setAttribute = (
   markDirty(node)
 }
 
-export const setStyle = (node: DOMNode, style: Styles): void => {
+export const setStyle = (node: DOMNode, style: Styles | undefined): void => {
+  const nextStyle = style ?? {}
   // Compare style properties to avoid marking dirty unnecessarily.
   // React creates new style objects on every render even when unchanged.
-  if (stylesEqual(node.style, style)) {
+  if (stylesEqual(node.style, nextStyle)) {
     return
   }
-  node.style = style
+  node.style = nextStyle
   markDirty(node)
 }
 
