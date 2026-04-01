@@ -23,6 +23,7 @@ import {
   normalizeFileEditInput,
   stripTrailingWhitespace,
 } from 'src/tools/FileEditTool/utils.js'
+import { FileReadTool } from 'src/tools/FileReadTool/FileReadTool.js'
 import { FileWriteTool } from 'src/tools/FileWriteTool/FileWriteTool.js'
 import { getTools } from 'src/tools.js'
 import type { AgentId } from 'src/types/ids.js'
@@ -656,6 +657,18 @@ export function normalizeToolInput<T extends Tool>(
         content: isMarkdown
           ? parsedInput.content
           : stripTrailingWhitespace(parsedInput.content),
+      } as z.infer<T['inputSchema']>
+    }
+    case FileReadTool.name: {
+      const parsedInput = FileReadTool.inputSchema.parse(input)
+      const pages =
+        parsedInput.pages?.trim() === '' ? undefined : parsedInput.pages
+
+      return {
+        file_path: parsedInput.file_path,
+        ...(parsedInput.offset !== undefined && { offset: parsedInput.offset }),
+        ...(parsedInput.limit !== undefined && { limit: parsedInput.limit }),
+        ...(pages !== undefined && { pages }),
       } as z.infer<T['inputSchema']>
     }
     case TASK_OUTPUT_TOOL_NAME: {

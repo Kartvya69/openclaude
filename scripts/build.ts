@@ -271,6 +271,7 @@ export const SeverityNumber = {};
     '@opentelemetry/sdk-logs',
     '@opentelemetry/sdk-metrics',
     '@opentelemetry/semantic-conventions',
+    '@vscode/ripgrep',
     // Cloud provider SDKs
     '@aws-sdk/client-bedrock',
     '@aws-sdk/client-bedrock-runtime',
