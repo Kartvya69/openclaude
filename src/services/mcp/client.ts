@@ -116,8 +116,8 @@ import { getLoggingSafeMcpBaseUrl } from './utils.js'
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fetchMcpSkillsForClient = feature('MCP_SKILLS')
   ? (
-      require('../../skills/mcpSkills.js') as typeof import('../../skills/mcpSkills.js')
-    ).fetchMcpSkillsForClient
+    require('../../skills/mcpSkills.js') as typeof import('../../skills/mcpSkills.js')
+  ).fetchMcpSkillsForClient
   : null
 
 import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js'
@@ -240,12 +240,12 @@ const claudeInChromeToolRendering =
 // GrowthBook tengu_malort_pedway (see gates.ts).
 const computerUseWrapper = feature('CHICAGO_MCP')
   ? (): typeof import('../../utils/computerUse/wrapper.js') =>
-      require('../../utils/computerUse/wrapper.js')
+    require('../../utils/computerUse/wrapper.js')
   : undefined
 const isComputerUseMCPServer = feature('CHICAGO_MCP')
   ? (
-      require('../../utils/computerUse/common.js') as typeof import('../../utils/computerUse/common.js')
-    ).isComputerUseMCPServer
+    require('../../utils/computerUse/common.js') as typeof import('../../utils/computerUse/common.js')
+  ).isComputerUseMCPServer
   : undefined
 
 import { mkdir, readFile, unlink, writeFile } from 'fs/promises'
@@ -326,9 +326,9 @@ function mcpBaseUrlAnalytics(serverRef: ScopedMcpServerConfig): {
   const url = getLoggingSafeMcpBaseUrl(serverRef)
   return url
     ? {
-        mcpServerBaseUrl:
-          url as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
-      }
+      mcpServerBaseUrl:
+        url as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
+    }
     : {}
 }
 
@@ -683,20 +683,20 @@ export const connectToServer = memoize(
         const transportOptions: SSEClientTransportOptions =
           proxyOptions.dispatcher
             ? {
-                eventSourceInit: {
-                  fetch: async (url: string | URL, init?: RequestInit) => {
-                    // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
-                    return fetch(url, {
-                      ...init,
-                      ...proxyOptions,
-                      headers: {
-                        'User-Agent': getMCPUserAgent(),
-                        ...init?.headers,
-                      },
-                    })
-                  },
+              eventSourceInit: {
+                fetch: async (url: string | URL, init?: RequestInit) => {
+                  // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
+                  return fetch(url, {
+                    ...init,
+                    ...proxyOptions,
+                    headers: {
+                      'User-Agent': getMCPUserAgent(),
+                      ...init?.headers,
+                    },
+                  })
                 },
-              }
+              },
+            }
             : {}
 
         transport = new SSEClientTransport(
@@ -832,8 +832,8 @@ export const connectToServer = memoize(
               'User-Agent': getMCPUserAgent(),
               ...(sessionIngressToken &&
                 !hasOAuthTokens && {
-                  Authorization: `Bearer ${sessionIngressToken}`,
-                }),
+                Authorization: `Bearer ${sessionIngressToken}`,
+              }),
               ...combinedHeaders,
             },
           },
@@ -842,10 +842,10 @@ export const connectToServer = memoize(
         // Redact sensitive headers before logging
         const headersForLogging = transportOptions.requestInit?.headers
           ? mapValues(
-              transportOptions.requestInit.headers as Record<string, string>,
-              (value, key) =>
-                key.toLowerCase() === 'authorization' ? '[REDACTED]' : value,
-            )
+            transportOptions.requestInit.headers as Record<string, string>,
+            (value, key) =>
+              key.toLowerCase() === 'authorization' ? '[REDACTED]' : value,
+          )
           : undefined
 
         logMCPDebug(
@@ -985,7 +985,7 @@ export const connectToServer = memoize(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'Open Claude',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,
@@ -1054,9 +1054,9 @@ export const connectToServer = memoize(
             `Connection timeout triggered after ${elapsed}ms (limit: ${getConnectionTimeoutMs()}ms)`,
           )
           if (inProcessServer) {
-            inProcessServer.close().catch(() => {})
+            inProcessServer.close().catch(() => { })
           }
-          transport.close().catch(() => {})
+          transport.close().catch(() => { })
           reject(
             new TelemetrySafeError_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS(
               `MCP server "${name}" connection timed out after ${getConnectionTimeoutMs()}ms`,
@@ -1145,9 +1145,9 @@ export const connectToServer = memoize(
           })
         }
         if (inProcessServer) {
-          inProcessServer.close().catch(() => {})
+          inProcessServer.close().catch(() => { })
         }
-        transport.close().catch(() => {})
+        transport.close().catch(() => { })
         if (stderrOutput) {
           logMCPError(name, `Server stderr: ${stderrOutput}`)
         }
@@ -1627,7 +1627,7 @@ export const connectToServer = memoize(
       logMCPError(name, `Connection failed: ${errorMessage(error)}`)
 
       if (inProcessServer) {
-        inProcessServer.close().catch(() => {})
+        inProcessServer.close().catch(() => { })
       }
       return {
         name,
@@ -1779,8 +1779,8 @@ export const fetchToolsForClient = memoizeWithLRU(
             searchHint:
               typeof tool._meta?.['anthropic/searchHint'] === 'string'
                 ? tool._meta['anthropic/searchHint']
-                    .replace(/\s+/g, ' ')
-                    .trim() || undefined
+                  .replace(/\s+/g, ' ')
+                  .trim() || undefined
                 : undefined,
             alwaysLoad: tool._meta?.['anthropic/alwaysLoad'] === true,
             async description() {
@@ -1871,11 +1871,11 @@ export const fetchToolsForClient = memoizeWithLRU(
                     onProgress:
                       onProgress && toolUseId
                         ? progressData => {
-                            onProgress({
-                              toolUseID: toolUseId,
-                              data: progressData,
-                            })
-                          }
+                          onProgress({
+                            toolUseID: toolUseId,
+                            data: progressData,
+                          })
+                        }
                         : undefined,
                     handleElicitation: context.handleElicitation,
                   })
@@ -1975,14 +1975,14 @@ export const fetchToolsForClient = memoizeWithLRU(
               return `${client.name} - ${displayName} (MCP)`
             },
             ...(isClaudeInChromeMCPServer(client.name) &&
-            (client.config.type === 'stdio' || !client.config.type)
+              (client.config.type === 'stdio' || !client.config.type)
               ? claudeInChromeToolRendering().getClaudeInChromeMCPToolOverrides(
-                  tool.name,
-                )
+                tool.name,
+              )
               : {}),
             ...(feature('CHICAGO_MCP') &&
-            (client.config.type === 'stdio' || !client.config.type) &&
-            isComputerUseMCPServer!(client.name)
+              (client.config.type === 'stdio' || !client.config.type) &&
+              isComputerUseMCPServer!(client.name)
               ? computerUseWrapper!().getComputerUseMCPToolOverrides(tool.name)
               : {}),
           }
@@ -2876,9 +2876,9 @@ export async function callMCPToolWithUrlElicitationRetry({
       const errorData = error.data
       const rawElicitations =
         errorData != null &&
-        typeof errorData === 'object' &&
-        'elicitations' in errorData &&
-        Array.isArray(errorData.elicitations)
+          typeof errorData === 'object' &&
+          'elicitations' in errorData &&
+          Array.isArray(errorData.elicitations)
           ? (errorData.elicitations as unknown[])
           : []
 
@@ -3101,16 +3101,16 @@ async function callMCPTool({
           timeout: timeoutMs,
           onprogress: onProgress
             ? sdkProgress => {
-                onProgress({
-                  type: 'mcp_progress',
-                  status: 'progress',
-                  serverName: name,
-                  toolName: tool,
-                  progress: sdkProgress.progress,
-                  total: sdkProgress.total,
-                  progressMessage: sdkProgress.message,
-                })
-              }
+              onProgress({
+                type: 'mcp_progress',
+                status: 'progress',
+                serverName: name,
+                toolName: tool,
+                progress: sdkProgress.progress,
+                total: sdkProgress.total,
+                progressMessage: sdkProgress.message,
+              })
+            }
             : undefined,
         },
       ),
@@ -3280,7 +3280,7 @@ export async function setupSdkMcpClients(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'Open Claude',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,
